@@ -11,6 +11,7 @@ import {
 import { libreFranklin } from "./fonts";
 import Navbar from "@/components/app/Navbar";
 import { Button } from "@/components/ui/button";
+import Footer from "@/components/app/Footer";
 
 export default function Home() {
   const { isLoading, isAuthenticated } = useConvexAuth();
@@ -19,6 +20,7 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24 gap-1">
       <Navbar />
+      <Footer />
       <Image
         className="absolute h-full w-full overflow-hidden -z-10 opacity-30 blur-[3px] dark:invert-0 dark:opacity-25"
         src="/bg.jpg"
