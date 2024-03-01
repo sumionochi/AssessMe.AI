@@ -11,8 +11,8 @@ import {
 import { libreFranklin } from "./fonts";
 import Navbar from "@/components/app/Navbar";
 import { Button } from "@/components/ui/button";
-import Footer from "@/components/app/Footer";
 import { ArrowRight } from "lucide-react";
+import Footer from "@/components/app/Footer";
 
 export default function Home() {
   const { isLoading, isAuthenticated } = useConvexAuth();
