@@ -46,9 +46,9 @@ const Dashboard = async ({}: Props) => {
 
   if (!userId) throw Error("userId undefined");
 
-  const EveryAssessment =  null//get all assessments 
-  const EveryResult =null //get all results
-  const EveryAutoAssessment=null //get all autoassessments
+  const EveryAssessment = null; //get all assessments
+  const EveryResult = null; //get all results
+  const EveryAutoAssessment = null; //get all autoassessments
   const level = (num: string) => {
     if (num == "1") return "Beginner";
     else if (num == "2") return "Intermediate";
