@@ -8,11 +8,12 @@ import { ClerkProvider, auth } from "@clerk/nextjs"
 import { dark, neobrutalism } from '@clerk/themes';
 import { Toaster } from "@/components/ui/sonner"
 import { ConvexClientProvider } from '@/providers/convex-client-provider';
+import NavHeader from '@/components/NavHeader';
 
 const lexend = Lexend({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'RecruitMe.AI',
+  title: 'AssessMe.AI',
   description: 'Enhance Interview Skills Using AI.',
 }
 
@@ -27,6 +28,7 @@ export default function RootLayout({
         <body className={cn(lexend.className, 'antialiased min-h-screen border-none outline-none', 'scrollbar scrollbar-thumb scrollbar-thumb-white scrollbar-track-slate-700 bg-gradient-to-tl from-violet-400 to-violet-300 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900 dark:to-violet-600')} suppressHydrationWarning={true}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             <ConvexClientProvider>
+              <NavHeader userId={userId}/>
               {children}
             </ConvexClientProvider>
             <Toaster/>
