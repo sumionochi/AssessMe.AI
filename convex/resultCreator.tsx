@@ -1,6 +1,28 @@
 import { mutation } from "./_generated/server";
 import { v } from "convex/values";
 
+type  Result ={
+    id              :string
+    name            :string
+    jobProfile      :string
+    jobtype         :string
+    companyName     :string
+    jobRequirements :string
+  
+    level     :string
+    questions :Question[]
+  
+    overview  :string
+    analytics :Analytics[]
+  
+    userId   :string
+    createdAt :Date
+  
+    
+  }
+
+
+
 export const createAssessment = mutation({
   args: {
     name: v.string(),
@@ -8,7 +30,7 @@ export const createAssessment = mutation({
     jobType: v.string(),
     companyName: v.string(),
     jobRequirements: v.string(),
-    questions: v.array(v.string()),
+    questions: v.array(v.id("assess")),
     level: v.string(),
     userId: v.string(),
   },

@@ -15,6 +15,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as assessmentCreator from "../assessmentCreator.js";
+import type * as resultCreator from "../resultCreator.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -26,6 +27,7 @@ import type * as assessmentCreator from "../assessmentCreator.js";
  */
 declare const fullApi: ApiFromModules<{
   assessmentCreator: typeof assessmentCreator;
+  resultCreator: typeof resultCreator;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

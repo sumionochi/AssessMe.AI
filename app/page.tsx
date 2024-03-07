@@ -36,6 +36,7 @@ export default function Home() {
           libreFranklin.className
         }
       >
+
         <span className="">Pioneers of Transparent Automated</span>
         <span>
           <span className=" text-[#4acdc2]">AI-Driven </span> Recruiting
