@@ -16,25 +16,26 @@ export default function Navbar() {
   const { setTheme } = useTheme();
 
   return (
-    <div className="flex h-[4.5rem] w-full bg-[#28736d] items-center justify-between  fixed  top-0 px-3 py-2">
+    <div className="flex h-16 w-full bg-fuchsia-900 items-center justify-between  fixed  top-0 px-3 py-2 transition-all">
       <div className={"text-2xl self font-bold " + lexend.className}>
         RecruitMe
       </div>
-      <div className="flex justify-center items-center px-8 h-[3.7rem] rounded-md  gap-8 bg-[#256963]">
-        <Button className="bg-[#256963] text-white hover:bg-[#194240]">
+      <div className="flex justify-center items-center px-8 h-[3.1rem] rounded-md  gap-8 bg-[#511d53]">
+        <Button className="bg-[#511d53] text-white hover:bg-[#38153a]">
+          
           AI Interview
         </Button>
-        <Button className="bg-[#256963] text-white hover:bg-[#194240]">
+        <Button className="bg-[#511d53] text-white hover:bg-[#38153a]">
           Feedback & Analytics
         </Button>
-        <Button className="bg-[#256963] text-white hover:bg-[#194240]">
+        <Button className="bg-[#511d53] text-white hover:bg-[#38153a]">
           Analytics
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="bg-[#256963] hover:bg-[#1c4a47] p-0 mr-1 border-0"
+              className="bg-[#511d53] hover:bg-[#38153a] p-0 mr-1 border-0"
               size="icon"
             >
               <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />

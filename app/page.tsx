@@ -39,7 +39,7 @@ export default function Home() {
 
         <span className="">Pioneers of Transparent Automated</span>
         <span>
-          <span className=" text-[#4acdc2]">AI-Driven </span> Recruiting
+          <span className=" text-[#ffbc2c]">AI-Driven </span> Recruiting
           Assessment
         </span>
       </div>
@@ -52,7 +52,7 @@ export default function Home() {
 
       <div className="flex">
         <div></div>
-        <Button className="text-[0.96rem] mt-2 py- flex gap-1">
+        <Button className="text-[0.96rem] hover:text-gray-900 transition-all text-gray-100 bg-gradient-to-br from-fuchsia-500 via-red-500 to-orange-500 transition-color mt-2 py- flex gap-1">
           <span>Let's assess{"  "}</span> <ArrowRight />{" "}
         </Button>
       </div>
