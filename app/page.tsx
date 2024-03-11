@@ -1,66 +1,68 @@
-import { Button } from '@/components/ui/button'
-import { ArrowRight, ArrowUpRight, BarChart, BarChart2, BarChartBig, BookText, Bot, BotIcon, GitGraph, Github, Key, Linkedin, Lock, Mail, Map, Medal, Monitor, ScrollText, Text } from 'lucide-react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { ThemeProvider } from '@/components/ui/ThemeProvider'
-import { redirect } from 'next/navigation'
-import { auth } from '@clerk/nextjs'
-import { currentUser } from '@clerk/nextjs';
+"use client";
 
+import { SignInButton } from "@clerk/nextjs";
+import Image from "next/image";
+import {
+  Authenticated,
+  Unauthenticated,
+  AuthLoading,
+  useConvexAuth,
+} from "convex/react";
+import { libreFranklin } from "./fonts";
+import Navbar from "@/components/app/Navbar";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import Footer from "@/components/app/Footer";
 
-export default async function Home() {
-  const get_user = await currentUser();
-  console.log(get_user);
+export default function Home() {
+  const { isLoading, isAuthenticated } = useConvexAuth();
+  console.log(isAuthenticated);
+
   return (
-    <div className='flex relative overflow-hidden antialiased flex-col items-center justify-between pt-0'>
-        <div className='flex flex-col gap-8 max-w-6xl sm:flex-row min-h-screen pt-10 sm:pt-28 px-4'>
-          <div className='text-left font-semibold text-white flex flex-col gap-8'>
-            <h1 className='text-2xl md:text-5xl'>Precise & Transparent in Evaluation<span className='text-violet-700'>.</span> <br/> <span className='text-violet-700'>Pioneers of AI-Driven <span className='text-white'>Automated</span> Assessment</span>.</h1>
-            <h3 className='text-md'>AssessMe.AI revolutionizes hiring by eliminating biases, ensuring fair assessments, and delivering transparent feedback for both companies and candidates, forging a future of equitable and positive recruitment experiences.</h3>
-            <div>
-              <Button className='p-6 shadow-md shadow-black border-none bg-gradient-to-br from-violet-500 to-violet-300 text-white rounded-xl' size={'lg'} asChild>
-                <Link href={'/dashboard'}>Let's Assess <ArrowRight className='ml-1 w-5 h-5'/></Link>
-              </Button>
-            </div>
-          </div>
-          <div className='text-center gap-8 flex flex-col'>
-            <Button className='p-6 shadow-md gap-2 shadow-black border-none bg-gradient-to-r from-purple-500 to-violet-300 text-white rounded-xl'>
-              <Link href={'/dashboard'} className='flex flex-row gap-2 items-center'>
-                <Bot/>
-                Ai Interview
-              </Link>
-            </Button>
-            <Button className='p-6 gap-2 shadow-md shadow-black border-none bg-gradient-to-r from-purple-500 to-violet-300 text-white rounded-xl'>
-              <Link className='flex flex-row gap-2 items-center' href={'/dashboard'}>
-                <BarChartBig/>
-                Feedback & Analytics
-              </Link>        
-            </Button>
-            <Button className='p-6 gap-2 shadow-md shadow-black border-none bg-gradient-to-r from-purple-500 to-violet-300 text-white rounded-xl'>
-              <Link className='flex flex-row gap-2 items-center' href={'/dashboard'}>
-                <Medal/>
-                Ranking 
-              </Link>
-            </Button>
-          </div>
-        </div>
-        <div className='flex px-4 pt-1 bg-white/20 text-white justify-between gap-4 flex-row items-center text-primary h-14 absolute bottom-0 w-full'>
-        <h2 className='text-white'>© 2023 AssessMe.AI</h2>
-        <div className='flex flex-row gap-4 justify-center items-center'>
-          <Link href={'https://github.com/sumionochi'}>
-            <Github/>
-          </Link>
-          <Link href={'https://www.linkedin.com/in/aaditya-srivastava-b4564821b/'}>
-            <Linkedin/>
-          </Link>
-          <Link href={'mailto:aaditya.srivastava.connect@gmail.com'}>
-            <Mail/>
-          </Link>
-          <Link href={'https://sumionochi.github.io/Portfolio-landing-page/'}>
-            <ArrowUpRight/>
-          </Link>
-        </div>
-        </div>
-    </div>
-  )
+    <main className="flex min-h-screen flex-col items-center justify-center p-24 gap-1">
+      <Navbar />
+      <Footer />
+      <Image
+        className="absolute h-full w-full overflow-hidden -z-10 opacity-15 blur-[4px] dark:invert-0 dark:opacity-5"
+        src="/bg.png"
+        width={"1920"}
+        height="0"
+        alt="background"
+      />
+
+      <div
+        className={
+          "headingDiv text-[2.5rem] text-center flex font-semibold flex-col leading-tight mt-8 " +
+          libreFranklin.className
+        }
+      >
+
+        <span className="">Pioneers of Transparent Automated</span>
+        <span>
+          <span className=" text-[#ffbc2c]">AI-Driven </span> Recruiting
+          Assessment
+        </span>
+      </div>
+
+      <div className="border- border-white px-4 py-2 text-center text-[1.07rem] w-[34rem] text-gray-200 opacity-80 ">
+        RecruitMe revolutionizes hiring by eliminating biases, ensuring fair
+        assessments, and delivering transparent feedback for both companies and
+        candidates.
+      </div>
+
+      <div className="flex">
+        <div></div>
+        <Button className="text-[0.96rem] hover:text-gray-900 transition-all text-gray-100 bg-gradient-to-br from-fuchsia-500 via-red-500 to-orange-500 transition-color mt-2 py- flex gap-1">
+          <span>Let's assess{"  "}</span> <ArrowRight />{" "}
+        </Button>
+      </div>
+      {/* <SignInButton mode="modal" />
+      <div>
+        <Authenticated>Logged in</Authenticated>
+        <Unauthenticated>Logged out</Unauthenticated>
+
+        <AuthLoading>Still loading</AuthLoading>
+      </div> */}
+    </main>
+  );
 }
