@@ -172,6 +172,22 @@ export const get = query({
   },
 });
 
+// convex/assess.ts
+export const getAssessmentCardById = query({
+  args: { _id: v.id("assess") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not Authenticated");
+    }
+    const interviewInfo = await ctx.db
+      .query("assess")
+      .filter((q) => q.eq(q.field("_id"), args._id))
+      .collect();
+    return interviewInfo;
+  },
+});
+
 export const assess_create = mutation({
   args: {
     name: v.string(),

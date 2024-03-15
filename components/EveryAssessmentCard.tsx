@@ -7,7 +7,7 @@ import AssessmentDisplay from './AssessmentDisplay';
 type Props = {}
 
 const EveryAssessmentCard = (props: Props) => {
-    const EveryAssessment = useQuery(api.assess.get);
+  const EveryAssessment = useQuery(api.assess.get);
   return (
     <>
     {EveryAssessment?.map((assessment) => (
