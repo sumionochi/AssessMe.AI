@@ -1,9 +1,8 @@
 export default {
-    providers: [
-      {
-        domain: "https://welcomed-moose-16.clerk.accounts.dev",
-        applicationID: "convex",
-        
-      },
-    ]
-  };
+  providers: [
+    {
+      domain: "https://thorough-molly-70.clerk.accounts.dev",
+      applicationID: "convex",
+    },
+  ]
+};
