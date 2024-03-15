@@ -27,7 +27,7 @@ type Props = {
     open: boolean,
     setOpen: (open: boolean) => void,
     toEdit?: {
-        _id: Id<"assess">;
+    _id: Id<"assess">;
     name: string;
     jobProfile: string;
     jobtype: string;
