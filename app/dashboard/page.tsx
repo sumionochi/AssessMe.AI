@@ -5,10 +5,12 @@ import React from 'react';
 import AssessButton from "@/components/AssessButton";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Link from "next/link";
-import { ArrowRight, BookOpenCheck, PencilRuler, ScrollIcon, ScrollTextIcon, SearchCheck, StickyNote, Trophy } from "lucide-react";
+import { ArrowRight, BookOpenCheck, PencilRuler, ScrollIcon, ScrollTextIcon, SearchCheck, StickyNote, Text, Trophy } from "lucide-react";
 import { SelectSeparator } from "@/components/ui/select";
 import AssessmentDisplay from "@/components/AssessmentDisplay";
 import EveryAssessmentCard from "@/components/EveryAssessmentCard";
+import InputImg from "@/components/InputImg";
+import InputPdf from "@/components/InputPdf";
 
 
 type Props = {
@@ -37,6 +39,14 @@ const Dashboard = async ({}: Props) => {
           <h1 className="font-semibold">Self Assessment</h1>
           <p>Improve your interviewee skills, build your personalized interview environment and receive your feedback with analytics.</p>
           <div><AssessButton/></div>
+        </div>
+      </div>
+
+      <div>
+        <h1 className="bg-secondary flex flex-row gap-2 w-fit mb-4 p-2 px-4 shadow-md shadow-black text-lg text-start rounded-lg text-gray-600 dark:text-gray-400 items-center"><Text className="w-5 h-5"/>Extract Context for Assessment</h1>
+        <div className="w-full flex flex-col sm:flex-row gap-4">
+          <InputImg/>
+          <InputPdf/>
         </div>
       </div>
 
