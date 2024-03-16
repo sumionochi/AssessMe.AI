@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 
 export const feedbackStore = mutation({
   args: {
@@ -57,5 +57,20 @@ export const feedbackStore = mutation({
       userId,
     });
     return feedback;
+  },
+});
+
+export const getFeedbackById = query({
+  args: { _id: v.id("feedback") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not Authenticated");
+    }
+    const FeedbackInfo = await ctx.db
+      .query("feedback")
+      .filter((q) => q.eq(q.field("_id"), args._id))
+      .collect();
+    return FeedbackInfo;
   },
 });
