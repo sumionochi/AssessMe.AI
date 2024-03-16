@@ -18,7 +18,7 @@ const getInterviewInfo = useQuery(api.assess.getAssessmentCardById, { _id });
   console.log(interviewInfo);
 
   if (!interviewInfo) {
-    return <div>Interview not found</div>;
+    return <div></div>;
   }
 
   return (

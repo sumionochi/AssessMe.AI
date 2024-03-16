@@ -3,6 +3,7 @@ import { Doc, Id } from "./_generated/dataModel";
 import { v } from "convex/values";
 import OpenAI from "openai";
 import { OpenAIStream, StreamingTextResponse } from "ai";
+import * as fs from "node:fs";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -172,7 +173,6 @@ export const get = query({
   },
 });
 
-// convex/assess.ts
 export const getAssessmentCardById = query({
   args: { _id: v.id("assess") },
   handler: async (ctx, args) => {
@@ -291,6 +291,27 @@ export const assess_action_GenerateResponse = action({
           })
         )
       ),
+      questionsAfterInterview: v.optional(
+        v.array(
+          v.object({
+            question: v.string(),
+            answer: v.string(),
+            isAI: v.optional(v.boolean()),
+            strengths: v.array(
+              v.object({
+                feedbackHeading: v.string(),
+                feedback: v.string(),
+              })
+            ),
+            improvements: v.array(
+              v.object({
+                feedbackHeading: v.string(),
+                feedback: v.string(),
+              })
+            ),
+          })
+        )
+      ),
       level: v.optional(v.string()),
     }),
   },
@@ -395,27 +416,28 @@ export const assess_action_GenerateResponse = action({
         content: systemContext,
       });
     } else if (queryType == "generateAnalytics") {
-      const question = body.question;
-      const answer = body.answer;
-      const jobProfile = body.jobProfile;
-      const jobtype = body.jobtype;
-      const companyName = body.companyName;
-      const jobRequirements = body.jobRequirements;
+      const jobProfile = body.jobProfile ?? "null";
+      const jobtype = body.jobtype ?? "null";
+      const companyName = body.companyName ?? "null";
+      const jobRequirements = body.jobRequirements ?? "null";
+
+      const questions = body.questions ?? []; // Ensure questions array exists and handle null case
+
+      const questionsArray = questions.map((q: any) => q.question ?? "null"); // Extract questions
+      const answersArray = questions.map((q: any) => q.answer ?? "null"); // Extract answers
 
       const systemContext = generateAnalytics
-        .replace("*insert_question_here*", question ?? "null")
-        .replace("*insert_answer_here*", answer ?? "null")
-        .replace("*insert_title_here*", jobProfile ?? "null")
-        .replace("*insert_type_here*", jobtype ?? "null")
-        .replace("*insert_company_here*", companyName ?? "null")
-        .replace("*insert_reqs_here*", jobRequirements ?? "null");
+        .replace("*insert_question_here*", questionsArray.join(", "))
+        .replace("*insert_answer_here*", answersArray.join(", "))
+        .replace("*insert_title_here*", jobProfile)
+        .replace("*insert_type_here*", jobtype)
+        .replace("*insert_company_here*", companyName)
+        .replace("*insert_reqs_here*", jobRequirements);
 
-      context.push({
-        role: "system",
-        content: systemContext,
-      });
+      console.log(systemContext);
+      context.push({ role: "system", content: systemContext });
     } else if (queryType == "overall") {
-      const questionsString = (body.questions ?? [])
+      const questionsString = (body.questionsAfterInterview ?? [])
         .map((q) => q?.question ?? "")
         .join("\n");
       const jobProfile = body.jobProfile;
@@ -424,7 +446,7 @@ export const assess_action_GenerateResponse = action({
       const jobRequirements = body.jobRequirements;
 
       const systemContext = overallFeedbackContext
-        .replace("*insert_questions_here*", questionsString ?? "null")
+        .replace("*insert_questions_here*", questionsString)
         .replace("*insert_title_here*", jobProfile ?? "null")
         .replace("*insert_type_here*", jobtype ?? "null")
         .replace("*insert_company_here*", companyName ?? "null")
@@ -474,7 +496,7 @@ export const assess_action_GenerateResponse = action({
 
     const stream = OpenAIStream(completion);
 
-    console.log("response generated :)", completion);
+    console.log("response generated :)");
 
     const handleStream = async (stream: ReadableStream<Uint8Array>) => {
       let result = "";

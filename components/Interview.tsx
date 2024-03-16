@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { useCompletion } from 'ai/react';
 import { useAudioRecorder } from 'react-audio-voice-recorder';
 import { Player } from '@lottiefiles/react-lottie-player';
-import controlsImage from '@/../public/controls.svg';
 import { DialogHeader, Dialog, DialogContent, DialogDescription, DialogTitle, DialogFooter, DialogClose, DialogTrigger } from './ui/dialog';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
@@ -26,6 +25,8 @@ import {drawOnCanvas} from '@/utils/draw'
 import Webcam from 'react-webcam';
 import { Camera, FlipHorizontal, Volume2 } from 'lucide-react';
 import { Id } from '@/convex/_generated/dataModel';
+import { useAction, useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 
 type Props = {
   interviewInfo : {
@@ -43,6 +44,10 @@ type Props = {
 }
 
 const Interview = ({interviewInfo}: Props) => {
+
+  const generated_Question = useAction(api.assess.assess_action_GenerateResponse);
+  const feedbackStore = useMutation(api.feedback.feedbackStore);
+
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [redo, setRedo] = useState(false);
   const [interviewerTalking, setInterviewerTalking] = useState(false);
@@ -67,13 +72,6 @@ const Interview = ({interviewInfo}: Props) => {
       improvements: [],
     }))
   );
-  
-  const { complete } = useCompletion({
-    api: '/api/generateQues',
-    onFinish: (prompt, completion) => {
-      textToSpeech(completion);
-    },
-  });
 
   const parseAudio = async (blob : Blob) => {
     const res = await fetch('/api/speechToText', {
@@ -129,7 +127,9 @@ const Interview = ({interviewInfo}: Props) => {
         prevAnswer: questions[questionsAnswered - 1].answer,
       };
     }
-    complete(requestBody);
+    generated_Question({ prompt: requestBody }).then((completion) => {
+      textToSpeech(completion);
+    });
   };
 
   const textToSpeech = async (input: string) => {
@@ -224,121 +224,96 @@ const Interview = ({interviewInfo}: Props) => {
         setLoading(true);
         console.log("reached the submission area")
         console.log(questions)
-        const response1 = await fetch("/api/generateQues", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+
+        const response1 = await generated_Question({
+          prompt: {
+            queryType: "overall",
+            jobProfile: interviewInfo.jobProfile,
+            companyName: interviewInfo.companyName,
+            jobtype: interviewInfo.jobtype,
+            jobRequirements: interviewInfo.jobRequirements,
+            questionsAfterInterview: questions,
           },
-          body: JSON.stringify({
+        });
+
+        const response2 = questions.map((q) => {
+          console.log(q.question, q.answer, ":)");
+          return generated_Question({
             prompt: {
-              queryType: "overall",
+              queryType: "feedback",
               jobProfile: interviewInfo.jobProfile,
               companyName: interviewInfo.companyName,
               jobtype: interviewInfo.jobtype,
               jobRequirements: interviewInfo.jobRequirements,
-              questions: questions,
+              question: q.question,
+              answer: q.answer,
             },
-          }),
-        });
-        const response2 = questions.map((q) => {
-          console.log(q.question, q.answer, ":)")
-          return fetch("/api/generateQues", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              prompt: {
-                queryType: "feedback",
-                jobProfile: interviewInfo.jobProfile,
-                companyName: interviewInfo.companyName,
-                jobtype: interviewInfo.jobtype,
-                jobRequirements: interviewInfo.jobRequirements,
-                questions: [{
-                  question: q.question,
-                  answer: q.answer,
-                }],
-              },
-            }),
           });
         });
         // Promise.all to wait for all fetch requests to complete
         const response2Promise = await Promise.all(response2);
-        const response3 = await fetch("/api/generateQues", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            prompt: {
-              queryType: "generateAnalytics",
-              jobProfile: interviewInfo.jobProfile,
-              companyName: interviewInfo.companyName,
-              jobtype: interviewInfo.jobtype,
-              jobRequirements: interviewInfo.jobRequirements,
-              questions: questions.map((q) => ({
-                question: q.question,
-                answer: q.answer,
-              })),
-            },
-          }),
-        });
-        console.log(response1.ok)
-        response2.forEach(async (res, index) => {
-          const response = await res; // Await the promise to get the actual Response
-          console.log(`Response for question ${index + 1}:`, response.ok);
-        });        
-        console.log(response3.ok)
-        const overallData = await response1.json();
-        const feedbackData = await Promise.all(response2.map(async (resPromise) => {
-          const res = await resPromise;
-          return await res.json();
-        }));        
-        const analyticsData = await response3.json();
-        console.log(overallData)
-        console.log(feedbackData)
-        console.log(analyticsData)
 
+        const response3 = await generated_Question({
+          prompt: {
+            queryType: "generateAnalytics",
+            jobProfile: interviewInfo.jobProfile,
+            companyName: interviewInfo.companyName,
+            jobtype: interviewInfo.jobtype,
+            jobRequirements: interviewInfo.jobRequirements,
+            questions: questions.map((q) => ({
+              question: q.question,
+              answer: q.answer,
+            })),
+          },
+        });
+
+        const feedbackData = await Promise.all(
+          response2Promise.map(async (res, index) => {
+            const response = await JSON.parse(res);
+            console.log(`Response for question ${index + 1}:`, response);
+            return response;
+          })
+        );
+        
+        console.log("final submission reached");
+        
+        const overallData = JSON.parse(response1);
+        const analyticsData = JSON.parse(response3);
+        
+        console.log(overallData);
+        console.log(feedbackData);
+        console.log(analyticsData);
+        
         const combinedQuestions = questions.map((question, index) => ({
           ...question,
           ...feedbackData[index],
         }));
 
-        const response = await fetch('/api/feedbackStore', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name: interviewInfo.name,
-            jobProfile: interviewInfo.jobProfile,
-            companyName: interviewInfo.companyName,
-            jobtype: interviewInfo.jobtype,
-            jobRequirements: interviewInfo.jobRequirements,
-            questions: combinedQuestions,
-            level: interviewInfo.level,
-            overview: overallData.feedback, // Assuming 'feedback' contains the overview string
-            analytics: analyticsData.interviewFeedbackAnalyticsRadar,
-          }),
+
+        const response = await feedbackStore({
+          name: interviewInfo.name,
+          jobProfile: interviewInfo.jobProfile,
+          companyName: interviewInfo.companyName,
+          jobtype: interviewInfo.jobtype,
+          jobRequirements: interviewInfo.jobRequirements,
+          questions: combinedQuestions,
+          level: interviewInfo.level,
+          overview: overallData.feedback,
+          analytics: analyticsData.interviewFeedbackAnalyticsRadar,
         });        
-        if (response.ok) {
+        if (response) {
           console.log("Request was successful!");
           await new Promise(resolve => setTimeout(resolve, 1000));
-          const responseData = await response.json();
-          console.log("Response:", responseData);
-        
-          const { results } = responseData;
-          const { id } = results;
-          
-          if (id) {
-            console.log("Extracted id:", id);
-            router.push(`/feedback?id=${id}`);
+          console.log(response)
+          console.log("id ready");
+
+          if (response) {
+            console.log("Extracted id:", response);
+            router.push(`/feedback?id=${response}`);
           } else {
             console.error("Error: Unable to extract id from the response.");
           }
-        } else {
-          console.error("Request failed with status:", response.status);
-        }
+        } 
       } catch (error) {
       console.error('Error submitting interview data:', error);
       console.error(error);

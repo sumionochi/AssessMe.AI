@@ -15,6 +15,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as assess from "../assess.js";
+import type * as feedback from "../feedback.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -26,6 +27,7 @@ import type * as assess from "../assess.js";
  */
 declare const fullApi: ApiFromModules<{
   assess: typeof assess;
+  feedback: typeof feedback;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
