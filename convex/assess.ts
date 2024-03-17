@@ -1,9 +1,10 @@
-import { action, mutation, query } from "./_generated/server";
+import { action, internalQuery, mutation, query } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
 import { v } from "convex/values";
 import OpenAI from "openai";
 import { OpenAIStream, StreamingTextResponse } from "ai";
 import * as fs from "node:fs";
+import {internal} from "./_generated/api"
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -188,6 +189,80 @@ export const getAssessmentCardById = query({
   },
 });
 
+export const questionSearch = query({
+  args:{bodyQuery: v.string()},
+  handler: async (ctx, args) => {
+    console.log(args.bodyQuery)
+    const results = await ctx.db
+      .query("assess")
+      .withSearchIndex("by_jobtype", (q) => q.search("jobtype", args.bodyQuery))
+      .collect();
+    console.log(results)
+    return results;
+  },
+})
+
+async function embed(text: string): Promise<number[]> {
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) {
+    throw new Error("OPENAI_KEY environment variable not set!");
+  }
+  const req = { input: text, model: "text-embedding-ada-002" };
+  const resp = await fetch("https://api.openai.com/v1/embeddings", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${key}`,
+    },
+    body: JSON.stringify(req),
+  });
+  if (!resp.ok) {
+    const msg = await resp.text();
+    throw new Error(`OpenAI API error: ${msg}`);
+  }
+  const json = await resp.json();
+  const vector = json["data"][0]["embedding"];
+  console.log(`Computed embedding of "${text}": ${vector.length} dimensions`);
+  return vector;
+}
+
+
+export const fetchResults = internalQuery({
+  args: { ids: v.array(v.id("assess")) },
+  handler: async (ctx, args) => {
+    const results: any[] | PromiseLike<any[]> = [];
+    for (const id of args.ids) {
+      const doc = await ctx.db.get(id);
+      if (doc === null) {
+        continue;
+      }
+      results.push(doc);
+    }
+    return results;
+  },
+});
+
+export const similarRequirements = action({
+  args: {
+    descriptionQuery: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const embedding = await embed(args.descriptionQuery);
+    const results = await ctx.vectorSearch("assess", "by_embedding", {
+      vector: embedding,
+      limit: 16,
+    });
+    const searchResults: Array<Doc<"assess">> = await ctx.runQuery(
+      internal.assess.fetchResults,
+      { ids: results.map((result) => result._id) },
+    );
+    console.log(searchResults)
+    return searchResults;
+  },
+});
+
+
+
 export const assess_create = mutation({
   args: {
     name: v.string(),
@@ -196,6 +271,7 @@ export const assess_create = mutation({
     companyName: v.string(),
     jobRequirements: v.string(),
     level: v.string(),
+    embeddings: v.array(v.float64()),
     questions: v.array(v.string()),
   },
   handler: async (ctx, args) => {
@@ -205,6 +281,8 @@ export const assess_create = mutation({
     }
     const userId = identity.subject;
 
+    const embeddingArray = await embed( args.jobRequirements );
+
     const assess = await ctx.db.insert("assess", {
       name: args.name,
       jobProfile: args.jobProfile,
@@ -213,6 +291,7 @@ export const assess_create = mutation({
       jobRequirements: args.jobRequirements,
       level: args.level,
       questions: args.questions,
+      embedding:embeddingArray,
       userId,
     });
     return assess;

@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Id } from "@/convex/_generated/dataModel";
 
-interface NoteProps {
+export interface NoteProps {
   assessment: {
     _id: Id<"assess">;
     name: string;

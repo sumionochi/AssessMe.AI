@@ -10,8 +10,13 @@ export default defineSchema({
     jobRequirements: v.string(),
     level: v.string(),
     questions: v.array(v.string()),
+    embedding: v.optional(v.array(v.float64())),
     userId: v.string(),
-  }).index("by_user", ["userId"]),
+  }).index("by_user", ["userId"]).vectorIndex("by_embedding", {vectorField: "embedding", dimensions:1536, filterFields:["jobRequirements"]})
+  .searchIndex("by_jobtype", {
+    
+    searchField:"jobtype"
+  }),
 
   feedback: defineTable({
     name: v.string(),
