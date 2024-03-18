@@ -22,6 +22,10 @@ export default defineSchema({
     author: v.string(),
     body: v.string(),
   }),
+  likes: defineTable({
+    liker: v.string(),
+    messageId: v.id("messages"),
+  }).index("byMessageId", ["messageId"]),
   feedback: defineTable({
     name: v.string(),
     jobProfile: v.string(),

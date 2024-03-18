@@ -19,6 +19,7 @@ export default function ChatArea() {
   const NAME = user?.firstName;
   const messagesEndRef = useRef(null);
   const messages = useQuery(api.messages.list);
+  const likeMessage = useMutation(api.messages.like);
   const sendMessage = useMutation(api.messages.send);
   const [newMessageText, setNewMessageText] = useState("");
   const scrollToBottom = () => {
@@ -52,21 +53,64 @@ export default function ChatArea() {
         </PopoverTrigger>
         <PopoverContent className="w-[23rem] overflow-x-hidden mr-12 px-0 py-0 rounded-2xl bg-[#221041] border-0">
           <div className="flex overflow-x-hidden h-[31rem] w-[23rem] flex-col items-center  bg-[#221041] rounded-xl">
-            <div className=" h-full flex overflow-x-hidden flex-col gap-2 overflow-y-auto py-8 px-3 w-full">
+            <div className=" h-full flex overflow-x-hidden flex-col gap-2 overflow-y-auto py-6 px-3 w-full">
               {messages?.map((message: any) => {
                 return (
                   <div
                     key={message._id}
-                    className={`w-max max-w-[18rem] rounded-md px-4 py-3 h-min ${
+                    className={`w-max relative flex justify-start mb-2   max-w-[18rem] border-red-500 rounded-md px-4 py-3 h-min ${
                       message.author !== NAME
                         ? "self-start  bg-gray-300 text-gray-800"
-                        : "self-end  bg-[#8357d0]  text-gray-50 text-right"
+                        : "self-end  bg-[#8357d0]  text-gray-50 "
                     } `}
                   >
-                    <div className="text-sm font-bold mb-1 text-left">
-                      {message.author}
+                    {message.author === NAME && (
+                      <div
+                        className={`w-0 h-min relative top-4 -left-12 `}
+                      >
+                        <button
+                          onClick={async () => {
+                            await likeMessage({
+                              liker: NAME!,
+                              messageId: message._id,
+                            });
+                          }}
+                        >
+                          <div className="flex">
+                          {message.likes ? <span className="text-white h-0">{message.likes}</span> : null} 
+                          <span>👍</span>
+                          </div>
+
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="">
+                      <div className="text-sm font-bold mb-1 text-left">
+                        {message.author}
+                      </div>
+                      {message.body}
                     </div>
-                    {message.body}
+                    {message.author !== NAME && (
+                      <div
+                        className={` h-min relative top-4 left-5 w-0`}
+                      >
+                        <button
+                          onClick={async () => {
+                            await likeMessage({
+                              liker: NAME!,
+                              messageId: message._id,
+                            });
+                          }}
+                        >
+                          {" "}
+                          <div className="flex">
+                          <span>👍</span>
+                          {message.likes ? <span className="text-white h-0">{message.likes}</span> : null} 
+                          </div>
+                        </button>
+                      </div>
+                    )}
                   </div>
                 );
               })}
