@@ -5,6 +5,7 @@ import OpenAI from "openai";
 import { OpenAIStream, StreamingTextResponse } from "ai";
 import * as fs from "node:fs";
 import {internal} from "./_generated/api"
+import { paginationOptsValidator } from "convex/server";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -164,12 +165,14 @@ Please limit the question to one sentence and make question a lot more technical
 `;
 
 export const get = query({
-  handler: async (ctx) => {
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Not Authenticated");
-    }
-    const assess_cards = await ctx.db.query("assess").collect();
+    // if (!identity) {
+    //   console.log("damn")
+    //   throw new Error("Not Authenticated");
+    // }
+    const assess_cards = await ctx.db.query("assess").order("desc").paginate(args.paginationOpts);
     return assess_cards;
   },
 });

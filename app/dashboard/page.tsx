@@ -54,6 +54,7 @@ const Dashboard = async ({}: Props) => {
         <h1 className="bg-secondary flex flex-row gap-2 w-fit mb-4 p-2 px-4 shadow-md shadow-black text-lg text-start rounded-lg text-gray-600 dark:text-gray-400 items-center"><ScrollTextIcon className="w-5 h-5"/> Self Assessment Cards</h1>
         <div className="grid gap-4 place-content-start grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
         <EveryAssessmentCard/>
+        
         </div>
       </div>
 
