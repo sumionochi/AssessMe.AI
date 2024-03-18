@@ -46,7 +46,7 @@ interface StyledDraggableProps {
 
 const NewAssessment = ({open, setOpen, toEdit}: Props) => {
     
-    const create = useMutation(api.assess.assess_create);
+    const create = useAction(api.assess.assess_create);
     const remove = useMutation(api.assess.assess_delete);
     const update = useMutation(api.assess.assess_update);
     const generated_Question = useAction(api.assess.assess_action_GenerateResponse);

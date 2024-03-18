@@ -1,4 +1,4 @@
-import { action, internalQuery, mutation, query } from "./_generated/server";
+import { action, internalMutation, internalQuery, mutation, query } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
 import { v } from "convex/values";
 import OpenAI from "openai";
@@ -260,10 +260,7 @@ export const similarRequirements = action({
     return searchResults;
   },
 });
-
-
-
-export const assess_create = mutation({
+export const assess_create_mutation = internalMutation({
   args: {
     name: v.string(),
     jobProfile: v.string(),
@@ -271,7 +268,40 @@ export const assess_create = mutation({
     companyName: v.string(),
     jobRequirements: v.string(),
     level: v.string(),
-    embeddings: v.optional(v.array(v.float64())),
+    embeddings: v.array(v.float64()),
+    questions: v.array(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not Authenticated");
+    }
+    const userId = identity.subject;
+
+    const assess = await ctx.db.insert("assess", {
+      name: args.name,
+      jobProfile: args.jobProfile,
+      jobtype: args.jobtype,
+      companyName: args.companyName,
+      jobRequirements: args.jobRequirements,
+      level: args.level,
+      questions: args.questions,
+      embedding:args.embeddings,
+      userId,
+    });
+    return assess;
+  },
+});
+
+
+export const assess_create = action({
+  args: {
+    name: v.string(),
+    jobProfile: v.string(),
+    jobtype: v.string(),
+    companyName: v.string(),
+    jobRequirements: v.string(),
+    level: v.string(),
     questions: v.array(v.string()),
   },
   handler: async (ctx, args) => {
@@ -283,7 +313,7 @@ export const assess_create = mutation({
 
     const embeddingArray = await embed( args.jobRequirements );
 
-    const assess = await ctx.db.insert("assess", {
+    const assess:any = await ctx.runMutation(internal.assess.assess_create_mutation, {
       name: args.name,
       jobProfile: args.jobProfile,
       jobtype: args.jobtype,
@@ -291,8 +321,7 @@ export const assess_create = mutation({
       jobRequirements: args.jobRequirements,
       level: args.level,
       questions: args.questions,
-      embedding:embeddingArray,
-      userId,
+      embeddings:embeddingArray,
     });
     return assess;
   },
