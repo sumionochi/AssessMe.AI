@@ -9,7 +9,7 @@ import { dark, neobrutalism } from '@clerk/themes';
 import { Toaster } from "@/components/ui/sonner"
 import { ConvexClientProvider } from '@/providers/convex-client-provider';
 import NavHeader from '@/components/NavHeader';
-import ChatArea from './chat/page';
+import ChatArea from '@/components/ChatArea';
 
 const lexend = Lexend({ subsets: ['latin'] })
 

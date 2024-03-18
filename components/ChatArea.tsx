@@ -17,16 +17,20 @@ import { useUser } from "@clerk/nextjs";
 export default function ChatArea() {
   const { isSignedIn, user, isLoaded } = useUser();
   const NAME = user?.firstName;
-
+  const messagesEndRef = useRef(null);
   const messages = useQuery(api.messages.list);
   const sendMessage = useMutation(api.messages.send);
   const [newMessageText, setNewMessageText] = useState("");
+  const scrollToBottom = () => {
+    //@ts-ignore
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   useEffect(() => {
-    // Make sure scrollTo works on button click in Chrome
-    setTimeout(() => {
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-    }, 0);
+    scrollToBottom();
+    console.log(messages);
   }, [messages]);
+
   const Submit = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -56,7 +60,7 @@ export default function ChatArea() {
                     className={`w-max max-w-[18rem] rounded-md px-4 py-3 h-min ${
                       message.author !== NAME
                         ? "self-start  bg-gray-300 text-gray-800"
-                          : "self-end  bg-[#8357d0]  text-gray-50 text-right"
+                        : "self-end  bg-[#8357d0]  text-gray-50 text-right"
                     } `}
                   >
                     <div className="text-sm font-bold mb-1 text-left">
@@ -66,6 +70,7 @@ export default function ChatArea() {
                   </div>
                 );
               })}
+              <div ref={messagesEndRef}></div>
             </div>
             <div className="relative  w-[80%] bottom-4 flex justify-center">
               <textarea
