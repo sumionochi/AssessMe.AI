@@ -271,7 +271,7 @@ export const assess_create = mutation({
     companyName: v.string(),
     jobRequirements: v.string(),
     level: v.string(),
-    embeddings: v.array(v.float64()),
+    embeddings: v.optional(v.array(v.float64())),
     questions: v.array(v.string()),
   },
   handler: async (ctx, args) => {

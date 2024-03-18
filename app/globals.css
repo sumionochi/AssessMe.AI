@@ -73,4 +73,29 @@
   body {
     @apply bg-background text-foreground;
   }
+
+
+
+
+
+
+
+
+
+.chat header p::before, .chat header p::after {
+  position: absolute;
+  top: 20%;
+  left: 0;
+  display: inline-block;
+  content: "";
+  width: 0.7em;
+  height: 0.7em;
+  margin-right: 0.5em;
+  background-color: #81e18c;
+  border-radius: 50%;
+  margin-bottom: 1px;
+
+  animation: pulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
 }

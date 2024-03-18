@@ -9,6 +9,7 @@ import { dark, neobrutalism } from '@clerk/themes';
 import { Toaster } from "@/components/ui/sonner"
 import { ConvexClientProvider } from '@/providers/convex-client-provider';
 import NavHeader from '@/components/NavHeader';
+import ChatArea from './chat/page';
 
 const lexend = Lexend({ subsets: ['latin'] })
 
@@ -30,6 +31,7 @@ export default function RootLayout({
             <ConvexClientProvider>
               <NavHeader userId={userId}/>
               {children}
+              <ChatArea />
             </ConvexClientProvider>
             <Toaster/>
           </ThemeProvider>

@@ -17,7 +17,11 @@ export default defineSchema({
     
     searchField:"jobtype"
   }),
-
+  
+  messages: defineTable({
+    author: v.string(),
+    body: v.string(),
+  }),
   feedback: defineTable({
     name: v.string(),
     jobProfile: v.string(),
