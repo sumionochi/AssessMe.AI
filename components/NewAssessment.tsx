@@ -21,6 +21,7 @@ import { api } from '@/convex/_generated/api'
 import { toast } from 'sonner'
 import { Id } from '@/convex/_generated/dataModel'
 import { assess_action_GenerateResponse } from '@/convex/assess'
+import { useSearchParams } from 'next/navigation';
 
 
 type Props = {
@@ -38,6 +39,13 @@ type Props = {
     userId: string;
     _creationTime: number;
     }, 
+    searchParams?: {
+        id: string,
+        jobProfile: string,
+        jobType: string,
+        companyName: string,
+        jobRequirements: string,
+    } 
 }
 
 interface StyledDraggableProps {
@@ -45,7 +53,13 @@ interface StyledDraggableProps {
   }
 
 const NewAssessment = ({open, setOpen, toEdit}: Props) => {
-    
+    const searchParams = useSearchParams();
+    const id = searchParams.get('id');
+    const jobProfile = searchParams.get('jobProfile');
+    const jobType = searchParams.get('jobType');
+    const companyName = searchParams.get('companyName');
+    const jobRequirements = searchParams.get('jobRequirements');
+
     const create = useAction(api.assess.assess_create);
     const remove = useMutation(api.assess.assess_delete);
     const update = useMutation(api.assess.assess_update);
@@ -65,14 +79,14 @@ const NewAssessment = ({open, setOpen, toEdit}: Props) => {
         resolver: zodResolver(createAssessSchema),
         defaultValues: {
             name: toEdit?.name || "",
-            jobProfile: toEdit?.jobProfile || "",
-            jobtype: toEdit?.jobtype || "",
-            companyName: toEdit?.companyName || "",
-            jobRequirements: toEdit?.jobRequirements || "",
+            jobProfile: toEdit?.jobProfile || jobProfile || "",
+            jobtype: toEdit?.jobtype || jobType || "",
+            companyName: toEdit?.companyName || companyName || "",
+            jobRequirements: toEdit?.jobRequirements || jobRequirements || "",
             level: toEdit?.level || "",
             questions: toEdit?.questions || [],
         },
-    });   
+    });    
 
     async function onSubmit(input:CreateAssessSchema) {
         console.log("reached the submission area")
@@ -229,9 +243,9 @@ const NewAssessment = ({open, setOpen, toEdit}: Props) => {
                                                 </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                {['Internship', 'Part-Time', 'Full-Time', 'Contract'].map((title) => {
+                                                {['Internship', 'Part-Time', 'Full-Time', 'Contract', jobType].map((title) => {
                                                     return (
-                                                    <SelectItem value={title.toString()} key={title}>
+                                                    <SelectItem value={title!.toString()} key={title}>
                                                         {title}
                                                     </SelectItem>
                                                     );

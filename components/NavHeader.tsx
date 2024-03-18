@@ -41,7 +41,7 @@ const NavHeader = ({ userId }: Props) => {
                     </Link>
                   </Button>
                   <Button className="p-3 border-none bg-gradient-to-br from-violet-500 to-violet-300 text-white rounded-md shadow-sm shadow-black">
-                    <Link href={`/dashboard_interviewer`}>
+                    <Link href={`/joinYourInterview`}>
                       <Pencil className="w-5 h-5" />
                     </Link>
                   </Button>
