@@ -243,7 +243,7 @@ const NewAssessment = ({open, setOpen, toEdit}: Props) => {
                                                 </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                {['Internship', 'Part-Time', 'Full-Time', 'Contract', jobType].map((title) => {
+                                                {['Internship', 'Part-Time', 'Full-Time', 'Contract', jobType ? jobType : "Trial"].map((title) => {
                                                     return (
                                                     <SelectItem value={title!.toString()} key={title}>
                                                         {title}
@@ -393,18 +393,10 @@ const NewAssessment = ({open, setOpen, toEdit}: Props) => {
                                 Submit
                             </Button>
                             <Button type='button' onClick={()=>{
-                                form.trigger(['name','jobProfile','companyName','jobtype','jobRequirements'])                              
+                                form.trigger(['name'])                              
                                 const name = form.getFieldState('name')
-                                const jobProfile = form.getFieldState('jobProfile')
-                                const companyName = form.getFieldState('companyName')
-                                const jobtype = form.getFieldState('jobtype')
-                                const jobRequirements = form.getFieldState('jobRequirements')
                                 
                                 if(!toEdit && (!name.isDirty || name.invalid)) return;
-                                if(!toEdit && (!jobProfile.isDirty || jobProfile.invalid)) return;
-                                if(!toEdit && (!companyName.isDirty || companyName.invalid)) return;
-                                if(!toEdit && (!jobtype.isDirty || jobtype.invalid)) return;
-                                if(!toEdit && (!jobRequirements.isDirty || jobRequirements.invalid)) return;
 
                                 setFormStep(1)
                                 }} className={cn('p-5 shadow-md shadow-black border-none bg-gradient-to-tl from-violet-500 to-violet-300 text-white rounded-xl', {hidden: formStep == 1})}>
@@ -412,19 +404,11 @@ const NewAssessment = ({open, setOpen, toEdit}: Props) => {
                                 <ArrowRight className='w-5 h-5 ml-1'/>
                             </Button>
                             <Button type='button' onClick={()=>{
-                                form.trigger(['name','jobProfile','companyName','jobtype','jobRequirements'])
+                                form.trigger(['name'])
                                 
                                 const name = form.getFieldState('name')
-                                const jobProfile = form.getFieldState('jobProfile')
-                                const companyName = form.getFieldState('companyName')
-                                const jobtype = form.getFieldState('jobtype')
-                                const jobRequirements = form.getFieldState('jobRequirements')
                                 
                                 if(!toEdit && (!name.isDirty || name.invalid)) return;
-                                if(!toEdit && (!jobProfile.isDirty || jobProfile.invalid)) return;
-                                if(!toEdit && (!companyName.isDirty || companyName.invalid)) return;
-                                if(!toEdit && (!jobtype.isDirty || jobtype.invalid)) return;
-                                if(!toEdit && (!jobRequirements.isDirty || jobRequirements.invalid)) return;
 
                                 setFormStep(0)
                                 }} className={cn('p-5 shadow-md shadow-black border-none bg-gradient-to-tl from-violet-500 to-violet-300 text-white rounded-xl ', {hidden: formStep == 0})}>
