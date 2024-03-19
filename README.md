@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## What it does
+- Allows users to apply for jobs and take mock assessments
+- Provides AI-generated feedback and analytics on interview performance
+- Offers a personalized experience with customizable mock interviews
 
-## Getting Started
+## How we built it
+- **Convex** was used as the serverless database platform for data storage and management, real time ai streaming, full text search, vector embedding search and chatbox with like (thumbs up) feature.
+- Next.js and TypeScript for frontend development
+- Tailwind CSS for styling the user interface
+- Integrated OpenAI's language models for feedback generation
+- Utilized Whisper.ai for speech-to-text transcription during interviews
 
-First, run the development server:
+![Screenshot (260)](https://github.com/sumionochi/AssessMe.AI/assets/89721628/61727102-82d4-4626-be21-63225590fe64)
+)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Challenges we ran into
+- Integrating various AI technologies seamlessly into the platform
+- Ensuring efficient data management and real-time updates with Convex
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+![Screenshot (263)](https://github.com/sumionochi/AssessMe.AI/assets/89721628/350708f1-35ee-4fdb-832b-9b930b1dd791
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Accomplishments that we're proud of
+- Leveraging Convex's serverless architecture for scalable and efficient data handling
+- Seamless integration of Convex with frontend technologies like Next.js and TypeScript
 
-## Learn More
+## What we learned
+- Working with serverless databases like Convex
+- Optimizing performance and real-time data synchronization with Convex
+- Combining serverless databases with AI technologies for enhanced user experiences
 
-To learn more about Next.js, take a look at the following resources:
+![Screenshot (262)](https://github.com/sumionochi/AssessMe.AI/assets/89721628/76be8c06-c681-4a52-972f-3a5d5d707968)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## What's next for AssessMe.AI
+- Exploring advanced querying and data modeling capabilities of Convex
+- Integrating Convex with additional AI services for more comprehensive insights
+- Optimizing data synchronization and real-time updates for a smoother user experience
