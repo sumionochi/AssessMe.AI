@@ -18,7 +18,7 @@
 - Integrating various AI technologies seamlessly into the platform
 - Ensuring efficient data management and real-time updates with Convex
 
-![Screenshot (263)](https://github.com/sumionochi/AssessMe.AI/assets/89721628/350708f1-35ee-4fdb-832b-9b930b1dd791
+![Screenshot (263)](https://github.com/sumionochi/AssessMe.AI/assets/89721628/350708f1-35ee-4fdb-832b-9b930b1dd791)
 
 ## Accomplishments that we're proud of
 - Leveraging Convex's serverless architecture for scalable and efficient data handling
